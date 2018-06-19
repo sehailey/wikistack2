@@ -1,11 +1,11 @@
-const Sequelize = require("sequelize");
-const db = new Sequelize("postgres://localhost:5432/wikistack", {
-  logging: false
-});
+// const Sequelize = require("sequelize");
+// const db = new Sequelize("postgres://localhost:5432/wikistack", {
+//   logging: false
+// });
 
-// const config = require('./config');
-// const Sequelize = require('sequelize');
-// const db = new Sequelize(config.database, config.username, config.password, config.options);
+const config = require('./config');
+const Sequelize = require('sequelize');
+const db = new Sequelize(config.database, config.username, config.password, config.options);
 
 
 const Page = db.define("page", {
@@ -31,6 +31,17 @@ const Page = db.define("page", {
   }
 });
 
+Page.beforeCreate(page => {
+    let str = page.tags;
+    page.tags = str.split(", ");
+    console.log("\n\n", "index.js typeof str.split: ", typeof str.split(", "), "\n\n");
+    console.log("\n\n", "index.js typeof str.split: ", typeof page.tags, "\n\n");
+    console.log("\n\nIt should work beforeCreate? but if beforeValidate, it should be if/else.\n\n");
+
+    //console.log("index.js page.tags: ", page.tags, " ", typeof page.tags);
+})
+//
+
 Page.beforeValidate(page => {
   /*
    * Generate slug
@@ -38,6 +49,7 @@ Page.beforeValidate(page => {
   if (!page.slug) {
     page.slug = page.title.replace(/\s/g, "_").replace(/\W/g, "").toLowerCase();
   }
+
 });
 
 const User = db.define("user", {

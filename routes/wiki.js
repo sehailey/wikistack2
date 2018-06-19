@@ -28,7 +28,10 @@ router.post("/", async (req, res, next) => {
     page.setAuthor(user);
 
     res.redirect("/wiki/" + page.slug);
-  } catch (error) { next(error) }
+  } catch (error) {
+      //console.log(req.body.tags);      
+      next(error)
+  }
 });
 
 router.post("/:slug", async (req, res, next) => {
