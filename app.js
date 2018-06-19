@@ -12,7 +12,9 @@ app.use(bodyParser.json());
 app.use("/wiki", require("./routes/wiki"));
 app.use("/users", require("./routes/users"));
 
-const { error, notFound } = require("./views");
+const notFound = require("./views/notFound");
+const errorPage = require("./views/error");
+
 
 app.get('/', function (req, res) {
    res.redirect('/wiki/');
@@ -22,11 +24,9 @@ app.use((req, res, next) => {
     res.status(404).send(notFound());
 })
 
-// app.use((err, req, res, next) => {
-//     console.error("this is our error: ", err.stack);
-//     //res.status(500).send(error(err));
-// })
-
-
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send(errorPage("cannot execute", err));
+})
 
 module.exports = app;
